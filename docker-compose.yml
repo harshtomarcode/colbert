@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  pgvector-db:
+    image: ankane/pgvector
+    container_name: pgvector-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+
+  streamlit-app:
+    build: ./src
+    container_name: streamlit-app
+    ports:
+      - "8501:8501"
+    depends_on:
+      - pgvector-db
+    environment:
+      VECTOR_DB_HOST: pgvector-db
+      VECTOR_DB_PORT: 5432
+
+volumes:
+  pgvector_data:
