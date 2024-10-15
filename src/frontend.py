@@ -2,12 +2,14 @@ import streamlit as st
 import tempfile
 import os
 from app import process_pdf, get_response
-import PyPDF2
+from pdf import load_pdf, get_pdf_page_count, get_pdf_page_text
 
 st.set_page_config(layout="wide")
 
 if 'messages' not in st.session_state:
     st.session_state.messages = []
+if 'pdf_path' not in st.session_state:
+    st.session_state.pdf_path = None
 
 def display_chat():
     for message in st.session_state.messages:
@@ -42,17 +44,15 @@ def main():
                 tmp_file.write(uploaded_file.getvalue())
                 tmp_file_path = tmp_file.name
 
+            st.session_state.pdf_path = tmp_file_path
             with st.spinner("Processing PDF..."):
                 process_pdf(tmp_file_path)
 
-            pdf_reader = PyPDF2.PdfReader(tmp_file_path)
-            num_pages = len(pdf_reader.pages)
+            num_pages = get_pdf_page_count(tmp_file_path)
 
             page_number = st.number_input("Page number", min_value=1, max_value=num_pages, value=1)
-            page = pdf_reader.pages[page_number - 1]
-            st.text_area("PDF Content", value=page.extract_text(), height=400)
-
-            os.unlink(tmp_file_path)
+            page_text = get_pdf_page_text(tmp_file_path, page_number - 1)
+            st.text_area("PDF Content", value=page_text, height=400)
 
 if __name__ == "__main__":
     main()

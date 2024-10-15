@@ -76,3 +76,4 @@ Werkzeug==3.0.4
 xxhash==3.5.0
 yarl==1.15.0
 PyMuPDF==1.24.11
+psycopg==3.2.3

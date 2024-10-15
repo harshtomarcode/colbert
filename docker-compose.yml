@@ -11,6 +11,12 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - pgvector_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
 
   streamlit-app:
     build: ./src
@@ -25,6 +31,12 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_HOST: pgvector-db
       POSTGRES_PORT: 5432
+    deploy:
+      resources:
+        limits:
+          memory: 24G
+        reservations:
+          memory: 16G
 
 volumes:
   pgvector_data:
